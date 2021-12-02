@@ -1,10 +1,12 @@
 package abstractNumberRepresentation.rational;
 
+import abstractNumberRepresentation.AbstractNumber;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.regex.Pattern;
 
-public class RationalNumber implements Comparable<RationalNumber> {
+public class RationalNumber implements AbstractNumber, Comparable<RationalNumber> {
 
     private final static int DEFAULT_SCALE = 2;
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
@@ -275,3 +277,4 @@ public class RationalNumber implements Comparable<RationalNumber> {
         return 0;
     }
 }
+
