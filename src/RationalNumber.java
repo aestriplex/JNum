@@ -8,29 +8,39 @@ public class RationalNumber {
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
     private final static Pattern IS_DECIMAL = Pattern.compile("-?\\d+((.)?\\d+)?", Pattern.CASE_INSENSITIVE);
     private final static Pattern IS_INTEGER = Pattern.compile("-?\\d+", Pattern.CASE_INSENSITIVE);
+
     private long numerator;
     private long denominator;
 
     private RationalNumber(long numerator, long denominator, boolean simplify) {
-        if (simplify) {
-            simplifyAndStoreRationalNumber(numerator,denominator);
-        } else {
-            this.numerator = numerator;
-            this.denominator = denominator;
-        }
+
+        if (denominator == 0) throw new ZeroDenominatorException();
+
+        this.numerator = numerator;
+        this.denominator = denominator;
+
+        setSign();
+
+        if (simplify)
+            simplifyRationalNumber();
     }
 
     private RationalNumber(BigDecimal number, boolean simplify) {
+
         int scale = number.scale();
-        if (simplify) {
-            simplifyAndStoreRationalNumber(number.movePointRight(scale).longValue(),expBase10(scale));
-        } else {
-            this.numerator = number.movePointRight(scale).longValue();
-            this.denominator = expBase10(scale);
-        }
+        this.numerator = number.movePointRight(scale).longValue();
+        this.denominator = expBase10(scale);
+
+        if (denominator == 0) throw new ZeroDenominatorException();
+
+        setSign();
+
+        if (simplify)
+            simplifyRationalNumber();
     }
 
     private RationalNumber(String number, boolean simplify) {
+
         String inputNumber = number.trim();
         validateString(inputNumber);
         if (isAnInteger(inputNumber)) {
@@ -38,20 +48,21 @@ public class RationalNumber {
             this.denominator = 1;
         } else {
             int scale = countDecimalDigits(inputNumber);
-            long num = Long.parseLong(inputNumber.replace(".",""));
-            long den = expBase10(scale);
-            if (simplify) {
-                simplifyAndStoreRationalNumber(num, den);
-            } else {
-                this.numerator = num;
-                this.denominator = den;
-            }
+            this.numerator = Long.parseLong(inputNumber.replace(".",""));
+            this.denominator = expBase10(scale);
+
+            if (denominator == 0) throw new ZeroDenominatorException();
+
+            setSign();
+
+            if (simplify)
+                simplifyRationalNumber();
         }
     }
 
     public RationalNumber(long numerator) {
         this.numerator = numerator;
-        this.denominator = 1L;
+        this.denominator = 1;
     }
 
     public RationalNumber(long numerator, long denominator) {
@@ -81,16 +92,20 @@ public class RationalNumber {
         if (!isADecimalNumber(number)) throw new InvalidFormatStringException();
     }
 
-    private void simplifyAndStoreRationalNumber(long numerator, long denominator) {
-        long gcd = greatestCommonDenominator(numerator, denominator);
+    private void simplifyRationalNumber() {
+        long gcd = greatestCommonDenominator(this.numerator, this.denominator);
         while (gcd != 1) {
-            numerator /=  gcd;
-            denominator /= gcd;
-            gcd = greatestCommonDenominator(numerator, denominator);
+            this.numerator /=  gcd;
+            this.denominator /= gcd;
+            gcd = greatestCommonDenominator(this.numerator, this.denominator);
         }
+    }
 
-        this.numerator = numerator;
-        this.denominator = denominator;
+    private void setSign() {
+        if (this.denominator < 0) {
+            this.numerator *= -1;
+            this.numerator *= -1;
+        }
     }
 
     private long expBase2(long exponent) {
@@ -183,20 +198,24 @@ public class RationalNumber {
         return new RationalNumber(newNumerator, lcm);
     }
 
+    public RationalNumber duplicateThis() {
+        return new RationalNumber(this.numerator, this.denominator, false);
+    }
+
     public RationalNumber sum(RationalNumber... others) {
-        RationalNumber result = new RationalNumber(numerator,denominator,false);
+        RationalNumber result = duplicateThis();
         for (final RationalNumber other : others) result = result.add(other);
         return new RationalNumber(result.numerator, result.denominator);
     }
 
     public RationalNumber product(RationalNumber... others) {
-        RationalNumber result = new RationalNumber(numerator,denominator);
+        RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result.multiply(other);
         return new RationalNumber(result.numerator, result.denominator);
     }
 
     public RationalNumber applyPercentage() {
-        return new RationalNumber(numerator * 100, denominator);
+        return new RationalNumber(this.numerator * 100, this.denominator);
     }
 
     public RationalNumber getPercentageOf(RationalNumber number) {
@@ -206,15 +225,15 @@ public class RationalNumber {
     public RationalNumber power(long exponent) {
         if (exponent >= 0)
             return new RationalNumber(
-                    naturalPow(numerator,exponent),
-                    naturalPow(denominator,exponent),
+                    naturalPow(this.numerator, exponent),
+                    naturalPow(this.denominator, exponent),
                     false
             );
 
         long exp = Math.abs(exponent);
         return new RationalNumber(
-                naturalPow(denominator,exp),
-                naturalPow(numerator,exp),
+                naturalPow(this.denominator, exp),
+                naturalPow(this.numerator, exp),
                 false
         );
     }
@@ -225,12 +244,14 @@ public class RationalNumber {
     }
 
     public boolean equals(RationalNumber other) {
-        return numerator == other.numerator && denominator == other.denominator;
+        return this.numerator == other.numerator && this.denominator == other.denominator;
     }
 
     @Override
     public String toString() {
-        return String.format("{%d/%d}",numerator,denominator);
+        return this.denominator == 1 ?
+                String.format("%d", this.numerator) :
+                String.format("{%d/%d}", this.numerator, this.denominator);
     }
 
     public static RationalNumber valueOf(BigDecimal decimalNumber) {
