@@ -1,6 +1,5 @@
-import java.math.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.regex.Pattern;
 
 public class RationalNumber {
@@ -12,21 +11,26 @@ public class RationalNumber {
     private long numerator;
     private long denominator;
 
-    public RationalNumber(long numerator) {
-        this.numerator = numerator;
-        this.denominator = 1L;
+    private RationalNumber(long numerator, long denominator, boolean simplify) {
+        if (simplify) {
+            simplifyAndStoreRationalNumber(numerator,denominator);
+        } else {
+            this.numerator = numerator;
+            this.denominator = denominator;
+        }
     }
 
-    public RationalNumber(long numerator, long denominator) {
-        simplifyAndStoreRationalNumber(numerator,denominator);
-    }
-
-    public RationalNumber(BigDecimal number) {
+    private RationalNumber(BigDecimal number, boolean simplify) {
         int scale = number.scale();
-        simplifyAndStoreRationalNumber(number.movePointRight(scale).longValue(),expBase10(scale));
+        if (simplify) {
+            simplifyAndStoreRationalNumber(number.movePointRight(scale).longValue(),expBase10(scale));
+        } else {
+            this.numerator = number.movePointRight(scale).longValue();
+            this.denominator = expBase10(scale);
+        }
     }
 
-    public RationalNumber(String number) {
+    private RationalNumber(String number, boolean simplify) {
         String inputNumber = number.trim();
         validateString(inputNumber);
         if (isAnInteger(inputNumber)) {
@@ -36,14 +40,32 @@ public class RationalNumber {
             int scale = countDecimalDigits(inputNumber);
             long num = Long.parseLong(inputNumber.replace(".",""));
             long den = expBase10(scale);
-            simplifyAndStoreRationalNumber(num,den);
+            if (simplify) {
+                simplifyAndStoreRationalNumber(num, den);
+            } else {
+                this.numerator = num;
+                this.denominator = den;
+            }
         }
     }
+
+    public RationalNumber(long numerator) {
+        this.numerator = numerator;
+        this.denominator = 1L;
+    }
+
+    public RationalNumber(long numerator, long denominator) {
+        this(numerator,denominator,true);
+    }
+
+    public RationalNumber(BigDecimal number) { this(number,true); }
+
+    public RationalNumber(String number) { this(number,true); }
 
     private int countDecimalDigits(String number) {
         int decimalDigits = 0, dotPosition = number.indexOf('.');
 
-        for (int i = 0, l = number.length(); dotPosition < l-1; decimalDigits++, dotPosition++) ;
+        for (int l = number.length(); dotPosition < l-1; decimalDigits++, dotPosition++) ;
 
         return decimalDigits;
     }
@@ -114,7 +136,7 @@ public class RationalNumber {
     }
 
     public RationalNumber reciprocal() {
-        return new RationalNumber(denominator, numerator);
+        return new RationalNumber(denominator, numerator,false);
     }
 
     public RationalNumber multiply(RationalNumber other) {
@@ -138,7 +160,8 @@ public class RationalNumber {
     }
 
     public long leastCommonMultiple(long first, long second) {
-        for (long i = first; i < first * second; i += first)
+        long max = Math.max(first,second);
+        for (long i = max; i < first * second; i += max)
             if (i % first == 0 && i % second == 0)
                 return i;
         return first * second;
@@ -161,15 +184,15 @@ public class RationalNumber {
     }
 
     public RationalNumber sum(RationalNumber... others) {
-        RationalNumber result = new RationalNumber(numerator,denominator);
-        for (RationalNumber other : others) result = result.add(other);
-        return result;
+        RationalNumber result = new RationalNumber(numerator,denominator,false);
+        for (final RationalNumber other : others) result = result.add(other);
+        return new RationalNumber(result.numerator, result.denominator);
     }
 
     public RationalNumber product(RationalNumber... others) {
         RationalNumber result = new RationalNumber(numerator,denominator);
         for (RationalNumber other : others) result.multiply(other);
-        return result;
+        return new RationalNumber(result.numerator, result.denominator);
     }
 
     public RationalNumber applyPercentage() {
@@ -184,13 +207,15 @@ public class RationalNumber {
         if (exponent >= 0)
             return new RationalNumber(
                     naturalPow(numerator,exponent),
-                    naturalPow(denominator,exponent)
+                    naturalPow(denominator,exponent),
+                    false
             );
 
         long exp = Math.abs(exponent);
         return new RationalNumber(
                 naturalPow(denominator,exp),
-                naturalPow(numerator,exp)
+                naturalPow(numerator,exp),
+                false
         );
     }
 
