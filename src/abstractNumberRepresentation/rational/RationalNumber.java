@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.regex.Pattern;
 
-public class RationalNumber {
+public class RationalNumber implements Comparable<RationalNumber> {
 
     private final static int DEFAULT_SCALE = 2;
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
@@ -96,11 +96,8 @@ public class RationalNumber {
 
     private void simplifyRationalNumber() {
         long gcd = greatestCommonDenominator(this.numerator, this.denominator);
-        while (gcd != 1) {
-            this.numerator /=  gcd;
-            this.denominator /= gcd;
-            gcd = greatestCommonDenominator(this.numerator, this.denominator);
-        }
+        this.numerator /=  gcd;
+        this.denominator /= gcd;
     }
 
     private void setSign() {
@@ -270,5 +267,11 @@ public class RationalNumber {
 
     public static RationalNumber valueOf(String number) {
         return new RationalNumber(number);
+    }
+
+    @Override
+    public int compareTo(RationalNumber o) {
+        // TODO
+        return 0;
     }
 }
