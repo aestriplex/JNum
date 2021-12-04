@@ -1,6 +1,10 @@
 package main.abstractnumber.rational;
 
 import main.abstractnumber.AbstractNumber;
+import main.abstractnumber.rational.exceptions.InvalidFormatStringException;
+import main.abstractnumber.rational.exceptions.NotImplementedFeatureException;
+import main.abstractnumber.rational.exceptions.ZeroDenominatorException;
+import main.abstractnumber.rational.exceptions.ZeroExponentialException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

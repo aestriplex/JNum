@@ -1,4 +1,4 @@
-package main.abstractnumber.rational;
+package main.abstractnumber.rational.exceptions;
 
 public class NotImplementedFeatureException extends RuntimeException {
 

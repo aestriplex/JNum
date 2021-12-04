@@ -1,9 +1,9 @@
 package test.abstractnumber.rational;
 
-import main.abstractnumber.rational.NotImplementedFeatureException;
+import main.abstractnumber.rational.exceptions.NotImplementedFeatureException;
 import main.abstractnumber.rational.RationalNumber;
-import main.abstractnumber.rational.ZeroDenominatorException;
-import main.abstractnumber.rational.ZeroExponentialException;
+import main.abstractnumber.rational.exceptions.ZeroDenominatorException;
+import main.abstractnumber.rational.exceptions.ZeroExponentialException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
