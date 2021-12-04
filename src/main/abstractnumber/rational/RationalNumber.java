@@ -146,6 +146,11 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     @Override
+    public RationalNumber abs() {
+        return this.numerator < 0 ? toggleSign() : this;
+    }
+
+    @Override
     public double doubleValue() { return (double) this.numerator / this.denominator; }
 
     @Override
@@ -171,28 +176,7 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
                 .divide(BigDecimal.valueOf(denominator),scale,roundingMode);
     }
 
-    @Override
-    public RationalNumber reciprocal() {
-        return new RationalNumber(denominator, numerator,false);
-    }
-
-    @Override
-    public RationalNumber multiply(RationalNumber other) {
-        return new RationalNumber(
-                numerator * other.numerator,
-                denominator * other.denominator
-        );
-    }
-
-    @Override
-    public RationalNumber divide(RationalNumber other) {
-        return new RationalNumber(
-                numerator * other.denominator,
-                denominator * other.numerator
-        );
-    }
-
-    public long greatestCommonDenominator(long first, long second) {
+    private long greatestCommonDenominator(long first, long second) {
         return second == 0 ?
                 first :
                 greatestCommonDenominator(second, first % second);
@@ -222,6 +206,27 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 //    }
 
     @Override
+    public RationalNumber reciprocal() {
+        return new RationalNumber(denominator, numerator,false);
+    }
+
+    @Override
+    public RationalNumber multiply(RationalNumber other) {
+        return new RationalNumber(
+                numerator * other.numerator,
+                denominator * other.denominator
+        );
+    }
+
+    @Override
+    public RationalNumber divide(RationalNumber other) {
+        return new RationalNumber(
+                numerator * other.denominator,
+                denominator * other.numerator
+        );
+    }
+
+    @Override
     public RationalNumber add(RationalNumber other) {
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
@@ -233,6 +238,40 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) - (other.numerator * (lcm / other.denominator));
         return new RationalNumber(newNumerator, lcm);
+    }
+
+    @Override
+    public RationalNumber multiply(long other) {
+        return new RationalNumber(numerator * other, denominator);
+    }
+
+    @Override
+    public RationalNumber divide(long other) {
+        return new RationalNumber(numerator, denominator * other);
+    }
+
+    @Override
+    public RationalNumber add(long other) {
+        long lcm = leastCommonMultiple(denominator, other);
+        long newNumerator = (numerator * (lcm / denominator)) + (other * lcm);
+        return new RationalNumber(newNumerator, lcm);
+    }
+
+    @Override
+    public RationalNumber subtract(long other) {
+        long lcm = leastCommonMultiple(denominator, other);
+        long newNumerator = (numerator * (lcm / denominator)) - (other * lcm);
+        return new RationalNumber(newNumerator, lcm);
+    }
+
+    @Override
+    public RationalNumber increment() {
+        return new RationalNumber(this.numerator + 1, this.denominator);
+    }
+
+    @Override
+    public RationalNumber decrement() {
+        return new RationalNumber(this.numerator - 1, this.denominator);
     }
 
     @Override

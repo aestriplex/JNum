@@ -9,6 +9,8 @@ public interface AbstractNumber<T> {
 
     RationalNumber toggleSign();
 
+    RationalNumber abs();
+
     double doubleValue();
 
     BigDecimal bigDecimalValue();
@@ -26,6 +28,18 @@ public interface AbstractNumber<T> {
     T add(T other);
 
     T subtract(T other);
+
+    RationalNumber multiply(long other);
+
+    RationalNumber divide(long other);
+
+    RationalNumber add(long other);
+
+    RationalNumber subtract(long other);
+
+    RationalNumber increment();
+
+    RationalNumber decrement();
 
     T duplicateThis();
 
