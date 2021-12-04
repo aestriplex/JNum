@@ -1,6 +1,6 @@
-package abstractNumberRepresentation.rational;
+package main.abstractnumber.rational;
 
-import abstractNumberRepresentation.AbstractNumber;
+import main.abstractnumber.AbstractNumber;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -128,8 +128,10 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
         return result;
     }
 
+    @Override
     public double doubleValue() { return (double) numerator / denominator; }
 
+    @Override
     public BigDecimal bigDecimalValue() {
         return BigDecimal.valueOf(numerator)
                 .divide(BigDecimal.valueOf(denominator),
@@ -137,25 +139,30 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
                         DEFAULT_ROUNDING_MODE);
     }
 
+    @Override
     public long longValue() {
         return bigDecimalValue()
                 .longValue();
     }
 
+    @Override
     public BigDecimal bigDecimalValueWithCustomRounding(int scale, RoundingMode roundingMode) {
         return BigDecimal.valueOf(numerator)
                 .divide(BigDecimal.valueOf(denominator),scale,roundingMode);
     }
 
+    @Override
     public long longValueWithCustomRounding(int scale, RoundingMode roundingMode) {
         return bigDecimalValueWithCustomRounding(scale,roundingMode)
                 .longValue();
     }
 
+    @Override
     public RationalNumber reciprocal() {
         return new RationalNumber(denominator, numerator,false);
     }
 
+    @Override
     public RationalNumber multiply(RationalNumber other) {
         return new RationalNumber(
                 numerator * other.numerator,
@@ -163,6 +170,7 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
         );
     }
 
+    @Override
     public RationalNumber divide(RationalNumber other) {
         return new RationalNumber(
                 numerator * other.denominator,
@@ -176,7 +184,7 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
                 greatestCommonDenominator(second, first % second);
     }
 
-    public long leastCommonMultiple(long first, long second) {
+    private long leastCommonMultiple(long first, long second) {
         long max = Math.max(first,second);
         for (long i = max; i < first * second; i += max)
             if (i % first == 0 && i % second == 0)
@@ -188,42 +196,64 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
 //        return (first * second) / greatestCommonDenominator(first, second);
 //    }
 
+    @Override
     public RationalNumber add(RationalNumber other) {
         long lcm = leastCommonMultiple(denominator, other.denominator);
-        long newNumerator = (numerator * (lcm / other.denominator)) + (other.numerator * (lcm / denominator));
+        long newNumerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
         return new RationalNumber(newNumerator, lcm);
     }
 
+    @Override
     public RationalNumber subtract(RationalNumber other) {
         long lcm = leastCommonMultiple(denominator, other.denominator);
-        long newNumerator = (numerator * (lcm / other.denominator)) - (other.numerator * (lcm / denominator));
+        long newNumerator = (numerator * (lcm / denominator)) - (other.numerator * (lcm / other.denominator));
         return new RationalNumber(newNumerator, lcm);
     }
 
+    @Override
     public RationalNumber duplicateThis() {
         return new RationalNumber(this.numerator, this.denominator, false);
     }
 
+    @Override
     public RationalNumber sum(RationalNumber... others) {
         RationalNumber result = duplicateThis();
         for (final RationalNumber other : others) result = result.add(other);
         return new RationalNumber(result.numerator, result.denominator);
     }
 
+    @Override
     public RationalNumber product(RationalNumber... others) {
         RationalNumber result = duplicateThis();
-        for (RationalNumber other : others) result.multiply(other);
+        for (RationalNumber other : others) result = result.multiply(other);
         return new RationalNumber(result.numerator, result.denominator);
     }
 
+    @Override
+    public RationalNumber difference(RationalNumber... others) {
+        RationalNumber result = duplicateThis();
+        for (RationalNumber other : others) result = result.subtract(other);
+        return new RationalNumber(result.numerator, result.denominator);
+    }
+
+    @Override
+    public RationalNumber quotient(RationalNumber... others) {
+        RationalNumber result = duplicateThis();
+        for (RationalNumber other : others) result = result.divide(other);
+        return new RationalNumber(result.numerator, result.denominator);
+    }
+
+    @Override
     public RationalNumber applyPercentage() {
         return new RationalNumber(this.numerator * 100, this.denominator);
     }
 
+    @Override
     public RationalNumber getPercentageOf(RationalNumber number) {
         return multiply(number).applyPercentage();
     }
 
+    @Override
     public RationalNumber power(long exponent) {
         if (exponent >= 0)
             return new RationalNumber(
@@ -240,6 +270,7 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
         );
     }
 
+    @Override
     public RationalNumber power(RationalNumber exponent) {
         if (exponent.denominator == 1) return power(exponent.numerator);
         throw new NotImplementedFeatureException("powers with rational exponent");

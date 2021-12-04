@@ -1,4 +1,6 @@
-package abstractNumberRepresentation;
+package main.abstractnumber;
+
+import main.abstractnumber.rational.RationalNumber;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,8 +22,6 @@ public interface AbstractNumber<T> {
     T multiply(T other);
 
     T divide(T other);
-    
-    long leastCommonMultiple(long first, long second);
 
     T add(T other);
 
@@ -32,6 +32,10 @@ public interface AbstractNumber<T> {
     T sum(T... others);
 
     T product(T... others);
+
+    T difference(T... others);
+
+    T quotient(T... others);
 
     T applyPercentage();
 

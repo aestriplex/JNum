@@ -1,4 +1,4 @@
-package abstractNumberRepresentation.rational;
+package main.abstractnumber.rational;
 
 public class InvalidFormatStringException extends RuntimeException {
 
