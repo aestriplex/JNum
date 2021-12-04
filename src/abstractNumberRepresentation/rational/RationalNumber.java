@@ -1,10 +1,13 @@
 package abstractNumberRepresentation.rational;
 
+import abstractNumberRepresentation.AbstractNumber;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class RationalNumber implements Comparable<RationalNumber> {
+public class RationalNumber implements AbstractNumber<RationalNumber>, Comparable<RationalNumber> {
 
     private final static int DEFAULT_SCALE = 2;
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
@@ -242,8 +245,17 @@ public class RationalNumber implements Comparable<RationalNumber> {
         throw new NotImplementedFeatureException("powers with rational exponent");
     }
 
-    public boolean equals(RationalNumber other) {
-        return this.numerator == other.numerator && this.denominator == other.denominator;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RationalNumber that = (RationalNumber) o;
+        return numerator == that.numerator && denominator == that.denominator;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numerator, denominator);
     }
 
     @Override
@@ -271,7 +283,9 @@ public class RationalNumber implements Comparable<RationalNumber> {
 
     @Override
     public int compareTo(RationalNumber o) {
-        // TODO
-        return 0;
+        if (this.denominator == 1 && o.denominator == 1) return Long.compare(this.numerator,o.numerator);
+        RationalNumber quotient = divide(o);
+        return Long.compare(quotient.numerator, quotient.denominator);
     }
 }
+
