@@ -2,6 +2,8 @@ package test.abstractnumber.rational;
 
 import main.abstractnumber.rational.NotImplementedFeatureException;
 import main.abstractnumber.rational.RationalNumber;
+import main.abstractnumber.rational.ZeroDenominatorException;
+import main.abstractnumber.rational.ZeroExponentialException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -10,6 +12,11 @@ import java.math.RoundingMode;
 import static org.junit.Assert.*;
 
 public class RationalNumberTest {
+
+    @Test(expected = ZeroDenominatorException.class)
+    public void zeroDenominatorTest() {
+        RationalNumber n = RationalNumber.valueOf(1,0);
+    }
 
     @Test
     public void bigDecimalValueTest() {
@@ -22,7 +29,15 @@ public class RationalNumberTest {
     @Test
     public void longValueTest() {
         RationalNumber n = RationalNumber.valueOf("2.5");
+
         assertEquals(2,n.longValue());
+    }
+
+    @Test
+    public void doubleValueTest() {
+        RationalNumber n = RationalNumber.valueOf("2.5");
+
+        assertEquals((double)5/2,n.doubleValue(),0.01);
     }
 
     @Test
@@ -179,6 +194,12 @@ public class RationalNumberTest {
         RationalNumber n = RationalNumber.valueOf(2);
         RationalNumber exp = RationalNumber.valueOf(1,2);
         n.power(exp);
+    }
+
+    @Test(expected = ZeroExponentialException.class)
+    public void powerWithZeroExponentAndZeroBase() {
+        RationalNumber n = RationalNumber.valueOf(0);
+        n.power(RationalNumber.valueOf(0));
     }
 
     @Test
