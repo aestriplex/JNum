@@ -11,12 +11,20 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class RationalNumber implements AbstractNumber<RationalNumber>, Comparable<RationalNumber> {
+public class RationalNumber extends Number implements AbstractNumber<RationalNumber>, Comparable<RationalNumber> {
 
     private final static int DEFAULT_SCALE = 2;
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
     private final static Pattern IS_DECIMAL = Pattern.compile("-?\\d+((.)?\\d+)?", Pattern.CASE_INSENSITIVE);
     private final static Pattern IS_INTEGER = Pattern.compile("-?\\d+", Pattern.CASE_INSENSITIVE);
+
+    public final static RationalNumber ZERO = new RationalNumber(0);
+    public final static RationalNumber ONE = new RationalNumber(1);
+    public final static RationalNumber MINUS_ONE = new RationalNumber(-1);
+    public final static RationalNumber TEN = new RationalNumber(10);
+    public final static RationalNumber HUNDRED = new RationalNumber(100);
+    public final static RationalNumber ONE_HALF = new RationalNumber(1,2,false);
+    public final static RationalNumber ONE_QUARTER = new RationalNumber(1,4,false);
 
     private long numerator;
     private long denominator;
@@ -133,7 +141,21 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
     }
 
     @Override
-    public double doubleValue() { return (double) numerator / denominator; }
+    public RationalNumber toggleSign() {
+        return new RationalNumber(-1 * this.numerator, this.denominator, false);
+    }
+
+    @Override
+    public double doubleValue() { return (double) this.numerator / this.denominator; }
+
+    @Override
+    public int intValue() { return (int) (this.numerator / this.denominator); }
+
+    @Override
+    public long longValue() { return this.numerator / this.denominator; }
+
+    @Override
+    public float floatValue() { return (float) this.numerator / this.denominator; }
 
     @Override
     public BigDecimal bigDecimalValue() {
@@ -141,12 +163,6 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
                 .divide(BigDecimal.valueOf(denominator),
                         DEFAULT_SCALE,
                         DEFAULT_ROUNDING_MODE);
-    }
-
-    @Override
-    public long longValue() {
-        return bigDecimalValue()
-                .longValue();
     }
 
     @Override
@@ -176,22 +192,33 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
         );
     }
 
-    private long greatestCommonDenominator(long first, long second) {
+    public long greatestCommonDenominator(long first, long second) {
         return second == 0 ?
                 first :
                 greatestCommonDenominator(second, first % second);
     }
 
     private long leastCommonMultiple(long first, long second) {
-        long max = Math.max(first,second);
-        for (long i = max; i < first * second; i += max)
-            if (i % first == 0 && i % second == 0)
-                return i;
-        return first * second;
+        return (first * second) / greatestCommonDenominator(first, second);
     }
 
+//    public long greatestCommonDenominator(long first, long second) {
+//        if (first == 0) return second;
+//        if (second == 0) return first;
+//        long min = Math.min(first,second);
+//        for (long i = min; i >= 1; i--) {
+//            if (first % i == 0 && second % i == 0)
+//                return i;
+//        }
+//        return 1;
+//    }
+
 //    private long leastCommonMultiple(long first, long second) {
-//        return (first * second) / greatestCommonDenominator(first, second);
+//        long max = Math.max(first,second);
+//        for (long i = max; i < first * second; i += max)
+//            if (i % first == 0 && i % second == 0)
+//                return i;
+//        return first * second;
 //    }
 
     @Override

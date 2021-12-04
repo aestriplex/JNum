@@ -1,9 +1,13 @@
 package main.abstractnumber;
 
+import main.abstractnumber.rational.RationalNumber;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public interface AbstractNumber<T> {
+
+    RationalNumber toggleSign();
 
     double doubleValue();
 
