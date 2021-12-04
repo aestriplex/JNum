@@ -1,5 +1,6 @@
 package test.abstractnumber.rational;
 
+import main.abstractnumber.rational.NotImplementedFeatureException;
 import main.abstractnumber.rational.RationalNumber;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import static org.junit.Assert.*;
 public class RationalNumberTest {
 
     @Test
-    public void bigDecimalValue() {
+    public void bigDecimalValueTest() {
         RationalNumber n = RationalNumber.valueOf("2.5");
         BigDecimal expected = new BigDecimal("2.5").setScale(2, RoundingMode.HALF_UP);
 
@@ -19,13 +20,13 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void longValue() {
+    public void longValueTest() {
         RationalNumber n = RationalNumber.valueOf("2.5");
         assertEquals(2,n.longValue());
     }
 
     @Test
-    public void bigDecimalValueWithCustomRounding() {
+    public void bigDecimalValueWithCustomRoundingTest() {
         RationalNumber n = RationalNumber.valueOf(1,6);
         BigDecimal expected = new BigDecimal("0.166666666").setScale(6, RoundingMode.FLOOR);
 
@@ -33,11 +34,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void longValueWithCustomRounding() {
-    }
-
-    @Test
-    public void reciprocal() {
+    public void reciprocalTest() {
         RationalNumber n1 = RationalNumber.valueOf(2,8);
         RationalNumber n2 = RationalNumber.valueOf(1,2);
         RationalNumber n3 = RationalNumber.valueOf(2);
@@ -50,7 +47,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void multiply() {
+    public void multiplyTest() {
         RationalNumber n1 = RationalNumber.valueOf(2,8);
         RationalNumber n2 = RationalNumber.valueOf(7,24);
 
@@ -60,7 +57,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void divide() {
+    public void divideTest() {
         RationalNumber n1 = RationalNumber.valueOf(2,8);
         RationalNumber n2 = RationalNumber.valueOf(7,24);
 
@@ -70,7 +67,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void add() {
+    public void addTest() {
         RationalNumber n1 = RationalNumber.valueOf(2,8);
         RationalNumber n2 = RationalNumber.valueOf(7,24);
 
@@ -80,7 +77,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void subtract() {
+    public void subtractTest() {
         RationalNumber n1 = RationalNumber.valueOf(2,8);
         RationalNumber n2 = RationalNumber.valueOf(7,24);
 
@@ -90,14 +87,14 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void duplicateThis() {
+    public void duplicateThisTest() {
         RationalNumber n = RationalNumber.valueOf(2,8);
 
         assertEquals(n, n.duplicateThis());
     }
 
     @Test
-    public void sum() {
+    public void sumTest() {
         RationalNumber n1 = RationalNumber.valueOf(1,2);
         RationalNumber n2 = RationalNumber.valueOf(1,4);
         RationalNumber n3 = RationalNumber.valueOf(2,8);
@@ -110,7 +107,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void product() {
+    public void productTest() {
         RationalNumber n1 = RationalNumber.valueOf(1,2);
         RationalNumber n2 = RationalNumber.valueOf(1,4);
         RationalNumber n3 = RationalNumber.valueOf(2,8);
@@ -123,7 +120,33 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void applyPercentage() {
+    public void differenceTest() {
+        RationalNumber n1 = RationalNumber.valueOf(1,2);
+        RationalNumber n2 = RationalNumber.valueOf(1,4);
+        RationalNumber n3 = RationalNumber.valueOf(2,8);
+        RationalNumber n4 = RationalNumber.valueOf(7,24);
+        RationalNumber n5 = RationalNumber.valueOf(5,2);
+
+        RationalNumber expected = RationalNumber.valueOf(-67,24);
+
+        assertEquals(expected,n1.difference(n2,n3,n4,n5));
+    }
+
+    @Test
+    public void quotientTest() {
+        RationalNumber n1 = RationalNumber.valueOf(1,2);
+        RationalNumber n2 = RationalNumber.valueOf(1,4);
+        RationalNumber n3 = RationalNumber.valueOf(2,8);
+        RationalNumber n4 = RationalNumber.valueOf(7,24);
+        RationalNumber n5 = RationalNumber.valueOf(5,2);
+
+        RationalNumber expected = RationalNumber.valueOf(384,35);
+
+        assertEquals(expected,n1.quotient(n2,n3,n4,n5));
+    }
+
+    @Test
+    public void applyPercentageTest() {
         RationalNumber n1 = RationalNumber.valueOf(1,2);
 
         RationalNumber expected = RationalNumber.valueOf(50);
@@ -132,7 +155,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void getPercentageOf() {
+    public void getPercentageOfTest() {
         RationalNumber n1 = RationalNumber.valueOf(91,24);
         RationalNumber percentage = RationalNumber.valueOf(1,2);
 
@@ -142,11 +165,24 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void testPower() {
+    public void powerTest() {
+        RationalNumber n = RationalNumber.valueOf(2);
+        RationalNumber exp1 = RationalNumber.valueOf(-2);
+        RationalNumber exp2 = RationalNumber.valueOf(5);
+
+        assertEquals(RationalNumber.valueOf(1,4),n.power(exp1));
+        assertEquals(RationalNumber.valueOf(32),n.power(exp2));
+    }
+
+    @Test(expected = NotImplementedFeatureException.class)
+    public void powerWithRationalExponentTest() {
+        RationalNumber n = RationalNumber.valueOf(2);
+        RationalNumber exp = RationalNumber.valueOf(1,2);
+        n.power(exp);
     }
 
     @Test
-    public void testToString() {
+    public void toStringTest() {
         RationalNumber n1 = RationalNumber.valueOf(1,2);
         RationalNumber n2 = RationalNumber.valueOf(4);
 
@@ -155,7 +191,7 @@ public class RationalNumberTest {
     }
 
     @Test
-    public void compareTo() {
+    public void compareToTest() {
         RationalNumber n1 = RationalNumber.valueOf(1,2);
         RationalNumber n2 = RationalNumber.valueOf(1,4);
         RationalNumber n3 = RationalNumber.valueOf(2,8);

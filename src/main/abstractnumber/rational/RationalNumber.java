@@ -152,12 +152,6 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
     }
 
     @Override
-    public long longValueWithCustomRounding(int scale, RoundingMode roundingMode) {
-        return bigDecimalValueWithCustomRounding(scale,roundingMode)
-                .longValue();
-    }
-
-    @Override
     public RationalNumber reciprocal() {
         return new RationalNumber(denominator, numerator,false);
     }
@@ -319,4 +313,3 @@ public class RationalNumber implements AbstractNumber<RationalNumber>, Comparabl
         return Long.compare(quotient.numerator, quotient.denominator);
     }
 }
-
