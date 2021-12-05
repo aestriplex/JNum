@@ -29,6 +29,16 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
             1024, 2048, 4096, 8192, 16384
     };
 
+    public final static RationalNumber PI =
+            new RationalNumber(
+                    3141592653589793L,
+                    1000000000000000L,
+                    false);
+    public final static RationalNumber E =
+            new RationalNumber(
+                    543656365691809L,
+                    200000000000000L,
+                    false);
     public final static RationalNumber ZERO = new RationalNumber(0);
     public final static RationalNumber ONE = new RationalNumber(1);
     public final static RationalNumber MINUS_ONE = new RationalNumber(-1);
