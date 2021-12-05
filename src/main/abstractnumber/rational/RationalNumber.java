@@ -396,6 +396,10 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
         return new RationalNumber(number, true);
     }
 
+    public static RationalNumber valueOf(double number) {
+        return new RationalNumber(number);
+    }
+
     @Override
     public int compareTo(RationalNumber o) {
         if (this.denominator == 1 && o.denominator == 1) return Long.compare(this.numerator,o.numerator);

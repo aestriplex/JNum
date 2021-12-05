@@ -13,6 +13,15 @@ import static org.junit.Assert.*;
 
 public class RationalNumberTest {
 
+    @Test
+    public void doubleconstructorTest() {
+        RationalNumber n = RationalNumber.valueOf(2.5);
+
+        RationalNumber expected = RationalNumber.valueOf(5,2);
+
+        assertEquals(expected, n);
+    }
+
     @Test(expected = ZeroDenominatorException.class)
     public void zeroDenominatorTest() {
         RationalNumber n = RationalNumber.valueOf(1,0);
