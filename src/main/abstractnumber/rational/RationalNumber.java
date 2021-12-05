@@ -18,6 +18,17 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     private final static Pattern IS_DECIMAL = Pattern.compile("-?\\d+((.)?\\d+)?", Pattern.CASE_INSENSITIVE);
     private final static Pattern IS_INTEGER = Pattern.compile("-?\\d+", Pattern.CASE_INSENSITIVE);
 
+    private final static long[] LONG_10_POW = {
+            1,      10,      100,      1000,      10000,
+            100000, 1000000, 10000000, 100000000, 1000000000
+    };
+
+    private final static long[] LONG_2_POW = {
+            1,    2,    4,    8,    16,
+            32,   64,   128,  256,  512,
+            1024, 2048, 4096, 8192, 16384
+    };
+
     public final static RationalNumber ZERO = new RationalNumber(0);
     public final static RationalNumber ONE = new RationalNumber(1);
     public final static RationalNumber MINUS_ONE = new RationalNumber(-1);
@@ -77,6 +88,10 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
         }
     }
 
+    public RationalNumber(double number) {
+        this(Double.toString(number),true);
+    }
+
     public RationalNumber(long numerator) {
         this.numerator = numerator;
         this.denominator = 1;
@@ -123,10 +138,12 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     private long expBase2(long exponent) {
+        if (exponent <= LONG_2_POW.length) return LONG_2_POW[(int)exponent];
         return naturalPow(2,exponent);
     }
 
     private long expBase10(long exponent) {
+        if (exponent <= LONG_10_POW.length) return LONG_10_POW[(int)exponent];
         return naturalPow(10,exponent);
     }
 
@@ -151,6 +168,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     @Override
+    public float floatValue() { return (float) this.numerator / this.denominator; }
+
+    @Override
     public double doubleValue() { return (double) this.numerator / this.denominator; }
 
     @Override
@@ -158,9 +178,6 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public long longValue() { return this.numerator / this.denominator; }
-
-    @Override
-    public float floatValue() { return (float) this.numerator / this.denominator; }
 
     @Override
     public BigDecimal bigDecimalValue() {
@@ -173,7 +190,7 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     @Override
     public BigDecimal bigDecimalValueWithCustomRounding(int scale, RoundingMode roundingMode) {
         return BigDecimal.valueOf(numerator)
-                .divide(BigDecimal.valueOf(denominator),scale,roundingMode);
+                .divide(BigDecimal.valueOf(denominator), scale, roundingMode);
     }
 
     private long greatestCommonDenominator(long first, long second) {
@@ -214,7 +231,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     public RationalNumber multiply(RationalNumber other) {
         return new RationalNumber(
                 numerator * other.numerator,
-                denominator * other.denominator
+                denominator * other.denominator,
+                true
         );
     }
 
@@ -222,7 +240,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     public RationalNumber divide(RationalNumber other) {
         return new RationalNumber(
                 numerator * other.denominator,
-                denominator * other.numerator
+                denominator * other.numerator,
+                true
         );
     }
 
@@ -230,48 +249,48 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     public RationalNumber add(RationalNumber other) {
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
-        return new RationalNumber(newNumerator, lcm);
+        return new RationalNumber(newNumerator, lcm, true);
     }
 
     @Override
     public RationalNumber subtract(RationalNumber other) {
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) - (other.numerator * (lcm / other.denominator));
-        return new RationalNumber(newNumerator, lcm);
+        return new RationalNumber(newNumerator, lcm, true);
     }
 
     @Override
     public RationalNumber multiply(long other) {
-        return new RationalNumber(numerator * other, denominator);
+        return new RationalNumber(numerator * other, denominator, true);
     }
 
     @Override
     public RationalNumber divide(long other) {
-        return new RationalNumber(numerator, denominator * other);
+        return new RationalNumber(numerator, denominator * other, true);
     }
 
     @Override
     public RationalNumber add(long other) {
         long lcm = leastCommonMultiple(denominator, other);
         long newNumerator = (numerator * (lcm / denominator)) + (other * lcm);
-        return new RationalNumber(newNumerator, lcm);
+        return new RationalNumber(newNumerator, lcm, true);
     }
 
     @Override
     public RationalNumber subtract(long other) {
         long lcm = leastCommonMultiple(denominator, other);
         long newNumerator = (numerator * (lcm / denominator)) - (other * lcm);
-        return new RationalNumber(newNumerator, lcm);
+        return new RationalNumber(newNumerator, lcm, true);
     }
 
     @Override
     public RationalNumber increment() {
-        return new RationalNumber(this.numerator + 1, this.denominator);
+        return new RationalNumber(this.numerator + 1, this.denominator, true);
     }
 
     @Override
     public RationalNumber decrement() {
-        return new RationalNumber(this.numerator - 1, this.denominator);
+        return new RationalNumber(this.numerator - 1, this.denominator,true);
     }
 
     @Override
@@ -283,33 +302,34 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     public RationalNumber sum(RationalNumber... others) {
         RationalNumber result = duplicateThis();
         for (final RationalNumber other : others) result = result.add(other);
-        return new RationalNumber(result.numerator, result.denominator);
+        return new RationalNumber(result.numerator, result.denominator,true);
     }
 
     @Override
     public RationalNumber product(RationalNumber... others) {
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.multiply(other);
-        return new RationalNumber(result.numerator, result.denominator);
+        return new RationalNumber(result.numerator, result.denominator, true);
     }
 
     @Override
     public RationalNumber difference(RationalNumber... others) {
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.subtract(other);
-        return new RationalNumber(result.numerator, result.denominator);
+        return new RationalNumber(result.numerator, result.denominator, true);
     }
 
     @Override
     public RationalNumber quotient(RationalNumber... others) {
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.divide(other);
-        return new RationalNumber(result.numerator, result.denominator);
+        return new RationalNumber(result.numerator, result.denominator, true);
     }
 
     @Override
     public RationalNumber applyPercentage() {
-        return new RationalNumber(this.numerator * 100, this.denominator);
+
+        return new RationalNumber(this.numerator * 100, this.denominator, true);
     }
 
     @Override
@@ -361,11 +381,11 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     public static RationalNumber valueOf(BigDecimal decimalNumber) {
-        return new RationalNumber(decimalNumber);
+        return new RationalNumber(decimalNumber, true);
     }
 
     public static RationalNumber valueOf(long numerator, long denominator) {
-        return new RationalNumber(numerator, denominator);
+        return new RationalNumber(numerator, denominator, true);
     }
 
     public static RationalNumber valueOf(long numerator) {
@@ -373,7 +393,7 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     public static RationalNumber valueOf(String number) {
-        return new RationalNumber(number);
+        return new RationalNumber(number, true);
     }
 
     @Override
