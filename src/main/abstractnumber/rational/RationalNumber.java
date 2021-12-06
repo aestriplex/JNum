@@ -8,7 +8,12 @@ import main.abstractnumber.rational.exceptions.ZeroExponentialException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class RationalNumber extends Number implements AbstractNumber<RationalNumber>, Comparable<RationalNumber> {
@@ -408,6 +413,64 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     public static RationalNumber valueOf(double number) {
         return new RationalNumber(number);
+    }
+
+    @Override
+    public List<RationalNumber> range(RationalNumber stop) {
+
+        List<RationalNumber> newList = new ArrayList<>();
+
+        if (compareTo(stop) >= 0) {
+            for (RationalNumber i = this; i.compareTo(stop) > 0; i = i.subtract(RationalNumber.valueOf(1))) {
+                newList.add(i);
+            }
+        } else {
+            for (RationalNumber i = this; i.compareTo(stop) < 0; i = i.add(RationalNumber.valueOf(1))) {
+                newList.add(i);
+            }
+        }
+
+        return newList;
+    }
+
+    @Override
+    public List<RationalNumber> range(RationalNumber stop, long step) {
+        return range(stop,RationalNumber.valueOf(step));
+    }
+
+    @Override
+    public List<RationalNumber> range(RationalNumber stop, RationalNumber step) {
+
+        List<RationalNumber> newList = new ArrayList<>();
+
+        if (compareTo(stop) >= 0) {
+            for (RationalNumber i = this; i.compareTo(stop) > 0; i = i.subtract(step)) {
+                newList.add(i);
+            }
+        } else {
+            for (RationalNumber i = this; i.compareTo(stop) < 0; i = i.add(step)) {
+                newList.add(i);
+            }
+        }
+
+        return newList;
+    }
+
+    public static List<RationalNumber> range(RationalNumber start, RationalNumber stop, RationalNumber step) {
+
+        List<RationalNumber> newList = new ArrayList<>();
+
+        if (start.compareTo(stop) >= 0) {
+            for (RationalNumber i = start; i.compareTo(stop) > 0; i = i.subtract(step)) {
+                newList.add(i);
+            }
+        } else {
+            for (RationalNumber i = stop; i.compareTo(stop) < 0; i = i.add(step)) {
+                newList.add(i);
+            }
+        }
+
+        return newList;
     }
 
     @Override

@@ -4,6 +4,7 @@ import main.abstractnumber.rational.RationalNumber;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 public interface AbstractNumber<T> {
 
@@ -67,6 +68,12 @@ public interface AbstractNumber<T> {
 
     @Override
     String toString();
-    
+
+    List<RationalNumber> range(RationalNumber stop);
+
+    List<RationalNumber> range(RationalNumber stop, long step);
+
+    List<RationalNumber> range(RationalNumber stop, RationalNumber step);
+
     int compareTo(T o);
 }
