@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-public interface AbstractNumber<T> {
+public interface AbstractNumber<T> extends Comparable<T> {
 
     RationalNumber toggleSign();
 
@@ -30,17 +30,17 @@ public interface AbstractNumber<T> {
 
     T subtract(T other);
 
-    RationalNumber multiply(long other);
+    T multiply(long other);
 
-    RationalNumber divide(long other);
+    T divide(long other);
 
-    RationalNumber add(long other);
+    T add(long other);
 
-    RationalNumber subtract(long other);
+    T subtract(long other);
 
-    RationalNumber increment();
+    T increment();
 
-    RationalNumber decrement();
+    T decrement();
 
     T duplicateThis();
 
@@ -69,11 +69,11 @@ public interface AbstractNumber<T> {
     @Override
     String toString();
 
-    List<RationalNumber> range(RationalNumber stop);
+    List<T> range(T stop);
 
-    List<RationalNumber> range(RationalNumber stop, long step);
+    List<T> range(T stop, long step);
 
-    List<RationalNumber> range(RationalNumber stop, RationalNumber step);
+    List<T> range(T stop, T step);
 
     int compareTo(T o);
 }

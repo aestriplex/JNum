@@ -11,12 +11,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public class RationalNumber extends Number implements AbstractNumber<RationalNumber>, Comparable<RationalNumber> {
+public class RationalNumber extends Number implements AbstractNumber<RationalNumber> {
 
     private final static int DEFAULT_SCALE = 2;
     private final static RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
