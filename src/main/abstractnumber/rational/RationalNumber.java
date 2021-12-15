@@ -118,12 +118,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     public RationalNumber(String number) { this(number,true); }
 
     private int countDecimalDigits(String number) {
-        int decimalDigits = 0, dotPosition = number.indexOf('.');
-
-        for (int l = number.length(); dotPosition < l-1; decimalDigits++, dotPosition++) ;
-
-        return decimalDigits;
+        return number.length() - number.indexOf('.') - 1;
     }
+
     private boolean isADecimalNumber(String number) {
         return IS_DECIMAL.matcher(number).matches();
     }
