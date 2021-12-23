@@ -64,8 +64,6 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     private RationalNumber(BigDecimal number, boolean simplify) {
 
-        if (number == null) throw new NullParamenterException();
-
         int scale = number.scale();
         this.numerator = number.movePointRight(scale).longValue();
         this.denominator = expBase10(scale);
@@ -79,8 +77,6 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     private RationalNumber(String number, boolean simplify) {
-
-        if (number == null) throw new NullParamenterException();
 
         String inputNumber = number.trim();
         validateString(inputNumber);
@@ -397,6 +393,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     public static RationalNumber valueOf(BigDecimal decimalNumber) {
+
+        if (decimalNumber == null) throw new NullParamenterException();
         return new RationalNumber(decimalNumber, true);
     }
 
@@ -409,6 +407,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     public static RationalNumber valueOf(String number) {
+
+        if (number == null) throw new NullParamenterException();
         return new RationalNumber(number, true);
     }
 
