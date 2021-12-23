@@ -1,10 +1,7 @@
 package main.abstractnumber.rational;
 
 import main.abstractnumber.AbstractNumber;
-import main.abstractnumber.rational.exceptions.InvalidFormatStringException;
-import main.abstractnumber.rational.exceptions.NotImplementedFeatureException;
-import main.abstractnumber.rational.exceptions.ZeroDenominatorException;
-import main.abstractnumber.rational.exceptions.ZeroExponentialException;
+import main.abstractnumber.rational.exceptions.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,6 +64,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     private RationalNumber(BigDecimal number, boolean simplify) {
 
+        if (number == null) throw new NullParamenterException();
+
         int scale = number.scale();
         this.numerator = number.movePointRight(scale).longValue();
         this.denominator = expBase10(scale);
@@ -80,6 +79,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
     }
 
     private RationalNumber(String number, boolean simplify) {
+
+        if (number == null) throw new NullParamenterException();
 
         String inputNumber = number.trim();
         validateString(inputNumber);
@@ -212,25 +213,6 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
         return (first * second) / greatestCommonDenominator(first, second);
     }
 
-//    public long greatestCommonDenominator(long first, long second) {
-//        if (first == 0) return second;
-//        if (second == 0) return first;
-//        long min = Math.min(first,second);
-//        for (long i = min; i >= 1; i--) {
-//            if (first % i == 0 && second % i == 0)
-//                return i;
-//        }
-//        return 1;
-//    }
-
-//    private long leastCommonMultiple(long first, long second) {
-//        long max = Math.max(first,second);
-//        for (long i = max; i < first * second; i += max)
-//            if (i % first == 0 && i % second == 0)
-//                return i;
-//        return first * second;
-//    }
-
     @Override
     public RationalNumber reciprocal() {
         return new RationalNumber(denominator, numerator,false);
@@ -238,6 +220,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber multiply(RationalNumber other) {
+
+        if (other == null) throw new NullParamenterException();
+
         return new RationalNumber(
                 numerator * other.numerator,
                 denominator * other.denominator,
@@ -247,6 +232,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber divide(RationalNumber other) {
+
+        if (other == null) throw new NullParamenterException();
+
         return new RationalNumber(
                 numerator * other.denominator,
                 denominator * other.numerator,
@@ -256,6 +244,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber add(RationalNumber other) {
+
+        if (other == null) throw new NullParamenterException();
+
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) + (other.numerator * (lcm / other.denominator));
         return new RationalNumber(newNumerator, lcm, true);
@@ -263,6 +254,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber subtract(RationalNumber other) {
+
+        if (other == null) throw new NullParamenterException();
+
         long lcm = leastCommonMultiple(denominator, other.denominator);
         long newNumerator = (numerator * (lcm / denominator)) - (other.numerator * (lcm / other.denominator));
         return new RationalNumber(newNumerator, lcm, true);
@@ -309,6 +303,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber sum(RationalNumber... others) {
+
+        if (others == null) throw new NullParamenterException();
+
         RationalNumber result = duplicateThis();
         for (final RationalNumber other : others) result = result.add(other);
         return new RationalNumber(result.numerator, result.denominator,true);
@@ -316,6 +313,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber product(RationalNumber... others) {
+
+        if (others == null) throw new NullParamenterException();
+
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.multiply(other);
         return new RationalNumber(result.numerator, result.denominator, true);
@@ -323,6 +323,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber difference(RationalNumber... others) {
+
+        if (others == null) throw new NullParamenterException();
+
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.subtract(other);
         return new RationalNumber(result.numerator, result.denominator, true);
@@ -330,6 +333,9 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber quotient(RationalNumber... others) {
+
+        if (others == null) throw new NullParamenterException();
+
         RationalNumber result = duplicateThis();
         for (RationalNumber other : others) result = result.divide(other);
         return new RationalNumber(result.numerator, result.denominator, true);
@@ -337,7 +343,6 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber applyPercentage() {
-
         return new RationalNumber(this.numerator * 100, this.denominator, true);
     }
 
@@ -365,6 +370,8 @@ public class RationalNumber extends Number implements AbstractNumber<RationalNum
 
     @Override
     public RationalNumber power(RationalNumber exponent) {
+
+        if (exponent == null) throw new NullParamenterException();
         if (exponent.denominator == 1) return power(exponent.numerator);
         throw new NotImplementedFeatureException("powers with rational exponent");
     }
