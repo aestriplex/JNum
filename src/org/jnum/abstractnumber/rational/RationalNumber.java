@@ -1,7 +1,7 @@
-package main.abstractnumber.rational;
+package org.jnum.abstractnumber.rational;
 
-import main.abstractnumber.AbstractNumber;
-import main.abstractnumber.rational.exceptions.*;
+import org.jnum.abstractnumber.AbstractNumber;
+import org.jnum.abstractnumber.rational.exceptions.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

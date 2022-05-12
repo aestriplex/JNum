@@ -1,4 +1,4 @@
-package main.abstractnumber.rational.exceptions;
+package org.jnum.abstractnumber.rational.exceptions;
 
 public class NullParamenterException extends RuntimeException {
 

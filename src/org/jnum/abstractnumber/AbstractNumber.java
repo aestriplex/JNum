@@ -1,6 +1,6 @@
-package main.abstractnumber;
+package org.jnum.abstractnumber;
 
-import main.abstractnumber.rational.RationalNumber;
+import org.jnum.abstractnumber.rational.RationalNumber;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
